@@ -1,8 +1,7 @@
 package com.mycomp.demoapp.controller;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
+
+import org.springframework.context.ApplicationContext;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -13,23 +12,31 @@ import com.mycomp.demoapp.pojo.AdditionalResponse;
 import com.mycomp.demoapp.pojo.MyService;
 import com.mycomp.demoapp.service.AdditionalService;
 
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
 @RestController
 @RequestMapping("/api/add")
+@Slf4j
+@RequiredArgsConstructor
 public class AdditionalController {
 	
-	//add slf4j logger object
+	/*add slf4j logger object
 	private static final Logger Logger = LoggerFactory.getLogger(AdditionalController.class);
+	*/
 	
+	private final  AdditionalService additionalService;
+	private final MyService myService;
+	private final ApplicationContext applicationContext;
 	
-	@Autowired
-	private AdditionalService additionalService;
-	
-	private MyService myService;
-	
-	public AdditionalController(MyService myService) {
-		Logger.info("**Additional Initialized");
+	/*public AdditionalController(MyService myService , ApplicationContext applicationContext ,AdditionalService additionalService) {
+		log.info("mService from : {}", myService);
+		log.info("applicationContext: {}" , applicationContext);
+		log.info("additionalService: {}", additionalService);
 		this.myService = myService;
-	}
+		this.applicationContext = applicationContext;
+		this.additionalService = additionalService;
+	}*/
 
 
 
@@ -38,12 +45,16 @@ public class AdditionalController {
 	{
 		//System.out.println("*Received addition request : " + request);
 		
-		Logger.info("*Received additional request: {}" + request);
+		log.info("*Received additional request: {}" + request);
 		
-        
-		String message1 =myService.myMethod();
+        /*dependency lookup
+		myService = applicationContext.getBean(MyService.class);*/
 		
-		Logger.info("Message from  :" , message1);
+		log.info("Using Dependency Lookup value MyService: {}", myService);
+		
+		String message =myService.myMethod();
+		
+		log.info("Message from MyService:{} " , message);
 		
 		return additionalService.addNumbers(request);
 		
